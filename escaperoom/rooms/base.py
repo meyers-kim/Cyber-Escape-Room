@@ -9,8 +9,12 @@ class Room:
 
     def inspect(self, item, state, tr):
         # called when player inspects an item or file
-        raise NotImplementedError("not done yet")
+        raise NotImplementedError("inspect() not done yet")
 
     def use(self, item, state, tr):
-        # not needed now
+        # optional
         return "nothing happens here"
+    
+    def hint(self, state):
+        # default hint if room forgets to override
+        return "no hint here (try 'look' or inspect the file)"

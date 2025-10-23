@@ -64,7 +64,7 @@ class GameEngine:
                 continue
 
             low = cmd.lower()
-            if low in ("quit", "exit"):
+            if low in ("quit"):
                 print("Goodbye player!")
                 break
 
