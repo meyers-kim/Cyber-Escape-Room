@@ -6,7 +6,7 @@ class FinalGateRoom(Room):
     def enter(self, state):
         return (
             "The final gate wants a message with all tokens in the right order.\n"
-            "Item that you can see: final_gate.txt try: inspect final_gate.txt"
+            "Item that you can see: final_gate.txt"
         )
 
     def inspect(self, item, state, tr):
@@ -66,3 +66,11 @@ class FinalGateRoom(Room):
         except FileNotFoundError:
             return None
         return out
+    
+    def use(self, item, state, tr):
+        if item.strip().lower() in ("gate", "final", "final_gate"):
+            return self.inspect("final_gate.txt", state, tr)
+        return "nothing to use with that here."
+    
+    def hint(self, state):
+        return "Try: inspect final_gate.txt or use gate"
