@@ -15,25 +15,20 @@ class GameState:
     # keeps track of everything that happens
     current_room: str = "intro"
     tokens: dict = field(default_factory=dict)
-    inventory: set = field(default_factory=set)
     flags: dict = field(default_factory=dict)
 
     def has_all_tokens(self):
         # 4 tokens in total when we have all the final gate opens
         return len(self.tokens) >= 4
     
-    # json cant handle set directly so i convert
     def to_dict(self):
-        d = asdict(self)
-        d["inventory"] = list(self.inventory)
-        return d
+        return asdict(self)
 
     @classmethod
     def from_dict(cls, d):
         obj = cls()
         obj.current_room = d.get("current_room", "intro")
         obj.tokens = dict(d.get("tokens", {}))
-        obj.inventory = set(d.get("inventory", []))
         obj.flags = dict(d.get("flags", {}))
         return obj
 
