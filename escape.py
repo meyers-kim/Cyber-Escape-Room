@@ -9,6 +9,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--start", default="intro", help="room to start in (intro/soc/dns/vault/malware/final)")
     parser.add_argument("--transcript", default="run.txt", help="file where transcript will be saved")
+    parser.add_argument("--load", default="", help="optional: load a save file before starting")
     args = parser.parse_args()
 
     # create the main game engine and  pass transcript path
@@ -22,18 +23,25 @@ def main():
     engine.register("malware", MalwareRoom())
     engine.register("final", FinalGateRoom())
 
-    # pick which room to start in
-    start_room = args.start.lower()
-    if start_room not in engine.rooms:
-        print(f"[warn] room '{start_room}' not found, using intro instead")
-        start_room = "intro"
-    engine.state.current_room = start_room
+    if args.load:
+        try:
+            engine._load_game(args.load)
+            print("")
+        except Exception:
+            # ignore errors here
+            pass
 
-    # small info lines so i know whats going on
-    print(f"[Game] start room -> {start_room}")
-    print(f"[Game] transcript -> {args.transcript}")
-    print("type 'help' once the game starts if you forget the commands")
+    # decide start room and if nothing is selected the player starts in the intro room
+    desired = (args.start or "intro").lower()
+    if desired not in engine.rooms:
+        desired = "intro"
 
+    # if the player tries to start in final but doesnt have tokens the intro room will be selected
+    if desired == "final" and not engine.state.has_all_tokens():
+        print("You can't start in the final room without all 4 tokens. You will be send to the intro room instead.\n")
+        desired = "intro"
+
+    engine.state.current_room = desired
     engine.run()
 
 if __name__ == "__main__":
