@@ -1,12 +1,15 @@
 from escaperoom.rooms.base import Room
+import sys
 
 class FinalGateRoom(Room):
     name = "final"
 
     def enter(self, state):
         return (
-            "The final gate wants a message with all tokens in the right order.\n"
-            "Item that you can see: final_gate.txt"
+            "Final Gate.\n"
+            "First, inspect the gate file to prepare your proof.\n"
+            "\n"
+            "Item you can see: final_gate.txt"
         )
 
     def inspect(self, item, state, tr):
@@ -27,10 +30,7 @@ class FinalGateRoom(Room):
             return "token_order not set in final_gate.txt"
 
         # collect token
-        ordered_values = []
-        for key in order:
-            ordered_values.append(state.tokens.get(key, "?"))
-
+        ordered_values = [state.tokens.get(key, "?") for key in order]
         msg = f"{group_id}|{'-'.join(ordered_values)}"
 
         # print and log
@@ -48,8 +48,17 @@ class FinalGateRoom(Room):
 
         # small hint if not all tokens there
         if "?" in ordered_values:
-            return "You did not collect all tokens yet, but message is printed for checking."
-        return "Final proof printed."
+            state.flags["final_ready"] = False
+            return (
+                "The gate file was inspected and the message was built,\n"
+                "but some tokens are missing (shown as '?'). Collect all four tokens first."
+            )
+
+        state.flags["final_ready"] = True
+        return (
+            "Proof prepared. The gate starts shining.\n"
+            "Now you can finally use the gate to escape."
+        )
 
     def _parse_gate_file(self, path):
         out = {}
@@ -68,9 +77,25 @@ class FinalGateRoom(Room):
         return out
     
     def use(self, item, state, tr):
+        # only end if inspection succeeded and tokens were complete
         if item.strip().lower() in ("gate", "final", "final_gate"):
-            return self.inspect("final_gate.txt", state, tr)
-        return "nothing to use with that here."
+            if state.flags.get("final_ready"):
+                # print a short closing line
+                print(
+                    "\nThe proof was accepted and the gate is opening! Well done.\n"
+                )
+                try:
+                    tr.close()
+                except Exception:
+                    pass
+                sys.exit(0)
+            else:
+                return "The gate remains locked. Inspect final_gate.txt after collecting all tokens."
+        return "Nothing to use with that here."
     
     def hint(self, state):
-        return "Try: inspect final_gate.txt or use gate"
+        # hint only says the next steps
+        return (
+            "Try: inspect final_gate.txt\n"
+            "Then: use gate (only works if all tokens are present)."
+        )
