@@ -1,4 +1,5 @@
 from escaperoom.rooms.base import Room
+from escaperoom import utils
 import sys
 
 class FinalGateRoom(Room):
