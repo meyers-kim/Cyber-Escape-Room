@@ -4,10 +4,9 @@ import json
 import base64
 import codecs
 
-# -------------- file i/o ----------------
+# file input output
 
 def read_lines(path):
-    # read file safely, return list of lines (with \n removed)
     try:
         with open(path, "r", encoding="utf-8", errors="replace") as f:
             return [ln.rstrip("\n") for ln in f]
@@ -22,7 +21,6 @@ def read_text(path):
         return ""
 
 def jsonl_iter(path):
-    # iterate json per line, skip broken ones
     try:
         with open(path, "r", encoding="utf-8", errors="replace") as f:
             for ln in f:
@@ -32,19 +30,16 @@ def jsonl_iter(path):
                 try:
                     yield json.loads(ln)
                 except Exception:
-                    # ignore malformed json line
                     continue
     except FileNotFoundError:
         return
 
-# -------------- base64 / rot13 / text checks --------------
+# base64
 
 def b64_decode(s):
-    # decode base64 to str; return "" on fail
     if not s:
         return ""
     try:
-        # allow missing padding
         pad = "=" * (-len(s) % 4)
         raw = base64.b64decode((s + pad).encode("utf-8"), validate=False)
         return raw.decode("utf-8", errors="replace")
@@ -58,7 +53,6 @@ def rot13(s):
         return s
 
 def looks_human(txt):
-    # rough check: mostly printable and has at least one space (so likely a sentence)
     if not txt:
         return False
     printable = set("".join(map(chr, range(32, 127))) + "\t\n\r")
@@ -66,10 +60,9 @@ def looks_human(txt):
     ratio = good / max(1, len(txt))
     return (ratio > 0.9) and (" " in txt)
 
-# -------------- kv parsing used by dns + final --------------
+# dns + final
 
 def parse_kv_file(path):
-    # parse simple key=value files, ignore comments (#) and empty lines
     out = {}
     for raw in read_lines(path):
         line = raw.strip()
@@ -102,7 +95,7 @@ def resolve_token_tag(raw_tag):
         return dec
     return tag
 
-# -------------- IP helpers used by SOC room --------------
+# soc
 
 _ipv4_re = re.compile(
     r"\b(?:(?:25[0-5]|2[0-4]\d|1?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|1?\d?\d)\b"
@@ -133,9 +126,8 @@ def ip_last_octet(ip):
     except Exception:
         return None
 
-# -------------- regex for vault room --------------
+# vault
 
-# tolerate spaces/newlines between pieces, also weird unicode spaces
 SAFE_RE = re.compile(
     r"S\s*A\s*F\s*E\s*\{\s*([0-9]+)\s*[-]\s*([0-9]+)\s*[-]\s*([0-9]+)\s*\}",
     re.IGNORECASE | re.MULTILINE,
@@ -151,7 +143,7 @@ def regex_find_safe_all(text):
             continue
     return triples
 
-# -------------- malware helpers --------------
+# malware
 
 def is_exfil_command(cmd):
     """
