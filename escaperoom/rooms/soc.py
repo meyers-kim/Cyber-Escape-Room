@@ -5,7 +5,7 @@ from escaperoom import utils
 
 class SocRoom(Room):
     """
-    Room 2 — SOC Triage Desk
+    Room 2 — SOC Triage Desk 
     This room analyzes the 'auth.log' file and extracts a keypad token based on failed login attempts.
     """
 
