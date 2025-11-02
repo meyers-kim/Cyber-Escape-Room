@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 # just export rooms so i can import them easily
+=======
+"""Makes all room classes easy to import.
+This lets the game engine load each room directly from escaperoom.rooms."""
+
+>>>>>>> kim
 from .intro import IntroRoom
 from .soc import SocRoom
 from .dns import DnsRoom
@@ -13,5 +19,9 @@ __all__ = [
     "VaultRoom",
     "MalwareRoom",
     "FinalGateRoom",
+<<<<<<< HEAD
 ]
 
+=======
+]
+>>>>>>> kim

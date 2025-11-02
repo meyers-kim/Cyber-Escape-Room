@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from escaperoom.rooms.base import Room
 from escaperoom import utils
 import sys
@@ -8,12 +9,41 @@ class FinalGateRoom(Room):
     def enter(self, state):
         return (
             "Final Gate.\n"
+=======
+"""Final Gate room for the game.
+Reads final_gate.txt, builds the proof message from tokens, and prints the 3 lines.
+We show the expected hex from the file."""
+
+import sys
+from escaperoom.rooms.base import Room
+
+class FinalGateRoom(Room):
+    """Final step of the escape room.
+    We read a config, assemble tokens in order, and mark the gate as pending.
+    If any token is missing, we keep the gate locked and guide the player."""
+
+    name = "final"
+
+    def enter(self, state):
+        """Shows a short description for the final room.
+        Tells the player to inspect the gate file to start the proof."""
+
+        return (
+            "You stand in the final room in front of the gate.\n"
+>>>>>>> kim
             "First, inspect the gate file to prepare your proof.\n"
             "\n"
             "Item you can see: final_gate.txt"
         )
 
     def inspect(self, item, state, tr):
+<<<<<<< HEAD
+=======
+        """Parses final_gate.txt and builds the proof message.
+        Prints the three required lines and logs them to the transcript.
+        If some token is missing it tells the player to collect all tokens."""
+
+>>>>>>> kim
         if item not in ("final_gate.txt", "gate"):
             return "use: inspect final_gate.txt"
 
@@ -62,6 +92,13 @@ class FinalGateRoom(Room):
         )
 
     def _parse_gate_file(self, path):
+<<<<<<< HEAD
+=======
+        """Reads a  key value file.
+        Skips comments and empty lines, returns a dict with the values.
+        If the file is missing, returns None instead of crashing."""
+
+>>>>>>> kim
         out = {}
         try:
             with open(path, "r", encoding="utf-8", errors="replace") as f:
@@ -78,6 +115,13 @@ class FinalGateRoom(Room):
         return out
     
     def use(self, item, state, tr):
+<<<<<<< HEAD
+=======
+        """Opens the gate only after a successful inspect with all tokens.
+        Prints a final message, tries to close the transcript, and exits the program.
+        If not ready, tells the player to inspect the file after collecting all tokens."""
+
+>>>>>>> kim
         # only end if inspection succeeded and tokens were complete
         if item.strip().lower() in ("gate", "final", "final_gate"):
             if state.flags.get("final_ready"):
@@ -95,7 +139,11 @@ class FinalGateRoom(Room):
         return "Nothing to use with that here."
     
     def hint(self, state):
+<<<<<<< HEAD
         # hint only says the next steps
+=======
+        """Tells the player what to do: inspect the file and then use the gate."""
+>>>>>>> kim
         return (
             "Try: inspect final_gate.txt\n"
             "Then: use gate (only works if all tokens are present)."

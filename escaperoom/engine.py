@@ -1,3 +1,12 @@
+<<<<<<< HEAD
+=======
+"""Game engine for the CLI.
+Runs the REPL, routes commands to rooms, and saves/loads state."""
+
+import json
+import os
+
+>>>>>>> kim
 from dataclasses import dataclass, field, asdict
 from escaperoom.transcript import Transcript
 from escaperoom.rooms.base import Room
@@ -7,25 +16,47 @@ from escaperoom.rooms.vault import VaultRoom
 from escaperoom.rooms.malware import MalwareRoom
 from escaperoom.rooms.final import FinalGateRoom
 
+<<<<<<< HEAD
 import json
 import os
 
 @dataclass
 class GameState:
     # keeps track of everything that happens
+=======
+@dataclass
+class GameState:
+    """Holds the current room and tokens.
+    This is what we save and load back."""
+>>>>>>> kim
     current_room: str = "intro"
     tokens: dict = field(default_factory=dict)
     flags: dict = field(default_factory=dict)
 
     def has_all_tokens(self):
+<<<<<<< HEAD
         # 4 tokens in total when we have all the final gate opens
         return len(self.tokens) >= 4
     
     def to_dict(self):
+=======
+        """Check if the player has 4 tokens.
+        When true, the final gate can be entered."""
+        return len(self.tokens) >= 4
+    
+    def to_dict(self):
+        """Convert the state to a plain dict.
+        Used by json.dump when saving."""
+>>>>>>> kim
         return asdict(self)
 
     @classmethod
     def from_dict(cls, d):
+<<<<<<< HEAD
+=======
+        """Create a GameState from a dict.
+        Fills defaults if keys are missing."""
+>>>>>>> kim
         obj = cls()
         obj.current_room = d.get("current_room", "intro")
         obj.tokens = dict(d.get("tokens", {}))
@@ -34,17 +65,35 @@ class GameState:
 
 
 class GameEngine:
+<<<<<<< HEAD
     # main engine
 
     def __init__(self, tr_path="run.txt"):
         self.state = GameState()
         self.tr = Transcript(tr_path)
         self.rooms: dict[str, Room] = {} 
+=======
+    """Main loop and command router.
+    Reads input, calls room methods, and writes the transcript."""
+    
+    def __init__(self, tr_path="run.txt"):
+        """Create a fresh game with a transcript.
+        Rooms are registered later by the entry script."""
+        self.state = GameState()
+        self.tr = Transcript(tr_path)
+        self.rooms: dict[str, Room] = {} 
+        
+>>>>>>> kim
     def register(self, name, room):
         # register a new room by name
         self.rooms[name] = room
 
     def run(self):
+<<<<<<< HEAD
+=======
+        """Text REPL for the game.
+        Reads commands until the player quits."""
+>>>>>>> kim
         print("=== Cyber Escape Room (Group8) ===")
         print(
             "Welcome to our Cyber Escape Room! Move between rooms, inspect and solve one file per room,\n"
@@ -79,16 +128,29 @@ class GameEngine:
         except Exception:
             pass
         
+<<<<<<< HEAD
         
         
     def confirm_quit(self):
+=======
+    def confirm_quit(self):
+        """Ask the player if they really want to quit.
+        Shows tokens and a small tip about saving."""
+>>>>>>> kim
         tokens_text = self._format_tokens_for_quit()
         print("\nAre you sure you want to quit the Cyber Escape Room?")
         if tokens_text:
             print(f"You currently hold the following token(s): {tokens_text}")
         else:
             print("You currently dont hold any tokens.")
+<<<<<<< HEAD
         print("Tip: you can still 'save <file>' or 'load <file>' before quitting. If you want to save your progress, or if you want to continue with an other save file.")
+=======
+        print(
+            "Tip: you can still 'save <file>' or 'load <file>' before quitting."
+            "If you want to save your progress, or if you want to continue with an other save file."
+        )
+>>>>>>> kim
 
         choice = input("Type 'yes' to quit, or anything else to stay: ").strip().lower()
         if choice == "yes":
@@ -96,6 +158,7 @@ class GameEngine:
             return True
         return False
     
+<<<<<<< HEAD
     
     
     
@@ -103,18 +166,42 @@ class GameEngine:
     
     
     def _format_tokens_for_quit(self):
+=======
+    def _format_tokens_for_quit(self):
+        """Turn the tokens dict into 'KEY=VAL, KEY=VAL'.
+        Returns empty string if no tokens yet."""
+>>>>>>> kim
         if not self.state.tokens:
             return ""
         parts = [f"{k}={v}" for k, v in sorted(self.state.tokens.items())]
         return ", ".join(parts)
 
     def handle_command(self, cmd):
+<<<<<<< HEAD
+=======
+        """Parse one command line and run the action."""
+>>>>>>> kim
         parts = cmd.split()
         action = parts[0].lower()
         args = parts[1:]
 
         if action == "help":
+<<<<<<< HEAD
             print("commands: look, move <room>, inspect <item>, use <item>, hint, inventory, save <file>, load <file>, quit")
+=======
+            print(
+                "commands:\n"
+                "  look            - describe the current room and which item is visible to you\n"
+                "  move <room>     - go to another room (soc, dns, vault, malware, final)\n"
+                "  inspect <item>  - check or read a file in the room for clues and to solve it\n"
+                "  use <item>      - try using something, like opening the final gate\n"
+                "  hint            - get a small hint for what to do next\n"
+                "  inventory       - show which tokens you have collected\n"
+                "  save <file>     - save your current game progress\n"
+                "  load <file>     - load a previously saved game file\n"
+                "  quit            - exit the game"
+            )
+>>>>>>> kim
 
         elif action == "look":
             room = self.rooms.get(self.state.current_room)
@@ -163,6 +250,11 @@ class GameEngine:
             print("Unknown command or missing argument!")
 
     def move_to(self, name):
+<<<<<<< HEAD
+=======
+        """Move the player to a different room.
+        Blocks the final room until all tokens are collected."""
+>>>>>>> kim
         name = name.lower()
         if name not in self.rooms:
             print("That room does not exist, please try another one.")
@@ -171,12 +263,22 @@ class GameEngine:
             print("You need to collect all 4 tokens before entering the final gate!")
             return
         self.state.current_room = name
+<<<<<<< HEAD
         print(f"you move to the {name} room")
         
         
     def _save_game(self, path):
         try:
             # if game gets a path with a folder use it otherwise store in 'saves/<name>.json'
+=======
+        print(f"You just moved to the {name} room, it might be good to have a look!")
+        
+        
+    def _save_game(self, path):
+        """Save the current gameState to JSON.
+        Creates a 'saves' folder if no path is given."""
+        try:
+>>>>>>> kim
             dirname = os.path.dirname(path)
             basename = os.path.basename(path) or "save"
             if not dirname:
@@ -198,6 +300,11 @@ class GameEngine:
             print(f"[Game] Save failed: {e}")
 
     def _load_game(self, path):
+<<<<<<< HEAD
+=======
+        """Load GameState from a JSON file.
+        Checks both the given path and the default 'saves' folder."""
+>>>>>>> kim
         try:
             # if user gives a name look for it
             dirname = os.path.dirname(path)
