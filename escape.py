@@ -1,3 +1,7 @@
+"""CLI entry point for the game.
+Parses arguments, registers all rooms, and starts the main game loop.
+"""
+
 import argparse
 from escaperoom.engine import GameEngine
 from escaperoom.rooms import (
@@ -5,7 +9,9 @@ from escaperoom.rooms import (
 )
 
 def main():
-    # argument parser
+    """Starts the game.
+    Parses optional arguments for start room, transcript file, and save file.
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument("--start", default="intro", help="room to start in (intro/soc/dns/vault/malware/final)")
     parser.add_argument("--transcript", default="run.txt", help="file where transcript will be saved")
