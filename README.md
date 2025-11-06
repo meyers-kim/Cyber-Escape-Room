@@ -3,17 +3,9 @@
 University of Luxembourg — Programming Fundamentals (Group 8)
 
 Group members:
-<<<<<<< HEAD
-- Nmili Souhail (Team Leader)
-- Ermakova Mariia
-- Meyers Kim Justin
-=======
 - Nmili Souhail - Worked on the malware and vault room
 - Ermakova Mariia - Worked on the soc and dns room
 - Meyers Kim Justin - Worked on the gameengine and the final room
-
----
->>>>>>> kim
 
 ---
 
