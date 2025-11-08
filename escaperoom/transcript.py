@@ -1,7 +1,13 @@
+"""Transcript writer for the game.
+Creates transcripts/<file> if only a name is given.
+We append lines as the player plays."""
+
 import os
 
 class Transcript:
-    # handles writing stuff to run.txt
+    """Handles writing the run transcript.
+    We keep the file handle open during the game and flush on each line.
+    The engine calls close() when the game ends."""
 
     def __init__(self, path="run.txt"):
         # if the user only gave a filename store it in transcripts/
